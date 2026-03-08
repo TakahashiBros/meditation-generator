@@ -82,18 +82,37 @@
         <h1>Take a deep breath...</h1>
         <p>Your custom meditation is ready to go.</p>
 
-        <audio controls>
+        <audio id="voice-player" controls>
             <source src="{{ url_for('static', filename='audio/' + audio_file) }}" type="audio/mpeg">
             Your browser does not support the audio element.
         </audio>
 
+        <audio id="bgm-player" loop>
+            <source src="{{ url_for('static', filename='bgm/ambient.mp3') }}" type="audio/mpeg">
+        </audio>
+
         <a href="{{ url_for('static', filename='audio/' + audio_file) }}" download class="btn-download">
-            Download Audio (.mp3)
+            Download Voice Audio (.mp3)
         </a>
 
         <hr>
         
         <a href="/" class="back-link">← Create another meditation</a>
     </div>
+
+    <script>
+        var voicePlayer = document.getElementById("voice-player");
+        var bgmPlayer = document.getElementById("bgm-player");
+        
+        bgmPlayer.volume = 0.25; 
+
+        voicePlayer.onplay = function() {
+            bgmPlayer.play();
+        };
+
+        voicePlayer.onpause = function() {
+            bgmPlayer.pause();
+        };
+    </script>
 </body>
 </html>
