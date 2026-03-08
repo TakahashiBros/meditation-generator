@@ -2,72 +2,177 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meditation Generator</title>
-</head>
-<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px;">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <h1>Create Your Custom Meditation</h1>
-    
-    {% if error %}
-        <div style="color: #d8000c; padding: 10px; border: 1px solid #d8000c; background-color: #ffbaba; margin-bottom: 20px; border-radius: 5px;">
-            <strong>{{ error }}</strong>
-        </div>
-    {% endif %}
-    <form action="/" method="POST">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 450px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 26px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+            font-weight: 700;
+        }
+        select, input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+            background-color: #fcfcfc;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #74ebd5;
+            background-color: #fff;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(116, 235, 213, 0.4);
+        }
+        .error {
+            color: #d8000c;
+            padding: 12px;
+            background-color: #ffbaba;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
         
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px;"><strong>Age Range:</strong></label>
-            <select name="age" required style="width: 100%; padding: 8px;">
-                <option value="" disabled selected>Select your age range...</option>
-                <option value="13-15">13–15</option>
-                <option value="16-18">16–18</option>
-            </select>
-        </div>
+        /* --- LOADING SPINNER CSS --- */
+        #loading-screen {
+            display: none; 
+            text-align: center;
+            padding: 20px 0;
+        }
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #74ebd5;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: #555;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create Your Custom Meditation</h1>
+        
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+        
+        <form id="meditation-form" action="/" method="POST">
+            <label>Your Age:</label>
+            <input type="number" name="age" min="10" max="25" required placeholder="e.g., 15">
 
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px;"><strong>Current Mood:</strong></label>
-            <select name="mood" required style="width: 100%; padding: 8px;">
+            <label>Current Mood:</label>
+            <select name="mood" required>
                 <option value="" disabled selected>How are you feeling?</option>
                 <option value="anxious">Anxious</option>
                 <option value="stressed">Stressed</option>
                 <option value="tired">Tired</option>
                 <option value="okay">Just Okay</option>
             </select>
-        </div>
 
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px;"><strong>What's on your mind?</strong></label>
-            <select name="context" required style="width: 100%; padding: 8px;">
+            <label>What's on your mind?</label>
+            <select name="context" required>
                 <option value="" disabled selected>Select an academic context...</option>
                 <option value="exam soon">Exam Soon</option>
                 <option value="big project">Big Project</option>
                 <option value="general study">General Studying</option>
             </select>
-        </div>
 
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px;"><strong>Meditation Style:</strong></label>
-            <select name="style" required style="width: 100%; padding: 8px;">
+            <label>Meditation Style:</label>
+            <select name="style" required>
                 <option value="" disabled selected>Select a style...</option>
                 <option value="calm/soothing">Calm & Soothing</option>
                 <option value="motivational">Motivational</option>
                 <option value="concentration">Concentration</option>
             </select>
-        </div>
 
-        <div style="margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 5px;"><strong>Desired Length:</strong></label>
-            <select name="length" required style="width: 100%; padding: 8px;">
+            <label>Desired Length:</label>
+            <select name="length" required>
                 <option value="" disabled selected>Select length...</option>
                 <option value="5">5 Minutes</option>
                 <option value="10">10 Minutes</option>
             </select>
+
+            <button type="submit" class="btn">Generate Audio</button>
+        </form>
+
+        <div id="loading-screen">
+            <div class="spinner"></div>
+            <div class="loading-text">Generating your custom meditation...<br>
+            <span style="font-size: 14px; font-weight: normal;">This usually takes a minute or two.</span></div>
         </div>
 
-        <button type="submit" style="padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
-            Generate Audio
-        </button>
-    </form>
+    </div>
 
+    <script>
+        document.getElementById('meditation-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            this.style.display = 'none';
+            document.getElementById('loading-screen').style.display = 'block';
+            
+            var form = this;
+            setTimeout(function() {
+                form.submit();
+            }, 50);
+        });
+    </script>
 </body>
 </html>
