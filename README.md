@@ -17,21 +17,25 @@ If you prefer to run the application locally, follow these steps:
    ```bash
    git clone [https://github.com/TakahashiBros/meditation-generator.git](https://github.com/TakahashiBros/meditation-generator.git)
    cd meditation-generator
+   ```
    
 2. Create and activate a virtual environment:
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows use: venv\Scripts\activate
+   ```
    
 3. Install the dependencies:
    ```bash
    pip install -r requirements.txt
+   ```
    
 4. Run the application:
    ```bash
    python app.py
+   ```
    
-5. Open your browser and navigate to http://127.0.0.1:5000.
+5. Open your browser and navigate to http://127.0.0.1:5000
 
 
 🧠 Engineering Decisions & Workarounds
