@@ -9,10 +9,39 @@ A lightweight Python web application that generates personalized, guided meditat
 
 ---
 
+## 💻 Local Setup Instructions
+
+If you prefer to run the application locally, follow these steps:
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/TakahashiBros/meditation-generator.git](https://github.com/TakahashiBros/meditation-generator.git)
+   cd meditation-generator
+   
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use: venv\Scripts\activate
+   
+3. Install the dependencies:
+   ```bash
+   pip install -r requirements.txt
+   
+4. Run the application:
+   ```bash
+   python app.py
+   
+5. Open your browser and navigate to http://127.0.0.1:5000.
+
+
 🧠 Engineering Decisions & Workarounds
   * LLM Integration vs. Stability: During development, I struggled to integrate Google's Gemini API. I encountered strict rate limits and "429 Quota Exceeded" errors on the free tier. To guarantee a 100% stable and reliable testing experience for the review team, I reverted to a robust, mathematically padded rule-based generation system.
 
   * Audio Mixing for UX: While gTTS is efficient, its delivery is robotic and lacks the emotional inflection needed for a true meditation guide. To mitigate this and elevate the user experience, I utilized pydub to dynamically calculate the duration of the generated voice track and overlay a looping ambient background track.
+
+  * Resource Constraints & Frontend Audio Mixing: The free-tier deployment on Render allocates a strict 512MB memory limit. Initial attempts to use pydub to overlay a looping ambient background track directly into the generated TTS file caused Out-Of-Memory (OOM) crashes. As an engineering workaround, I shifted the compute load to the client: the backend generates the lightweight voice track, and the HTML/JS frontend handles the simultaneous, volume-adjusted playback of an optimized ambient loop.
+
+  * Duration Math vs. Server Stability: To prevent further memory spikes, I bypassed heavy in-memory audio processing libraries for calculating exact track lengths. Instead of measuring millisecond durations, I implemented a lightweight text-padding algorithm to approximate the requested meditation length (5 or 10 minutes), ensuring 100% server stability and instant generation times.
 
 ___
 
@@ -37,3 +66,5 @@ This MVP was completed within the suggested ~6-hour timebox. Demonstrating the p
   * Paid LLM Integration: Re-introduce the Gemini API or OpenAI using a paid tier to bypass quota limits, combined with strict system prompts for true personalization.
 
   * Frontend Polish: Extract the inline CSS into a dedicated stylesheet or utilize a lightweight framework like Tailwind CSS for a more responsive UI.
+
+  * Infrastructure Upgrade: Upgrade to a paid tier on Render to unlock sufficient RAM. This would allow the backend to safely re-implement the exact mathematical audio duration calculations using pydub without risking OOM crashes.
